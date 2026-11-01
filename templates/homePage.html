@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Page</title>
+    <style>
+        *{
+            box-sizing: border-box;
+            margin: 0px;
+            font-size: 24px;
+        }
+        html{
+            height: 100vh;
+        }
+        .body{
+            display: flex;
+            flex-direction: column;
+            padding-left: 15px;
+        }
+        .conT2B{
+            display: flex;
+            flex-direction: column;
+            row-gap: 5px;
+        }
+        .conL2R{
+            display: flex;
+            column-gap: 5px;
+        }
+    </style>
+</head> 
+<body class="body">
+    <div id="welcome">
+        <p style="display: flex; max-width: fit-content; border: 1px solid #000000; background-color: #BBDEFB; border-radius: 8px; margin-top: 15px; padding: 4px 6px 4px 6px;">Hi {{name}}, welcome to CCK Restaurant!!</p>
+    </div>
+
+    <div class="conT2B" id="orders" style="max-width: 350px; display: flex; border: 1px solid #000000; background-color: #EEEEEE; border-radius: 8px; margin-top: 10px; padding:4px 6px 4px 6px;">
+        <p> Your Orders</p>
+        <hr style="height: 1px; background-color: black;">
+        <div class="conL2R" style="margin-left: 20px; justify-content: flex-start;">
+            <p id="nullOrder" style="display: none; font-size: 18px;">You have not ordered anything yet.</p>
+            
+            <div class="conT2B" id="items">
+                <p>Items</p>
+            </div>
+            <div class="conT2B" id="status">
+                <p>Status</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="conT2B" id="order" style="margin-top: 10px; border: 1px solid black; border-radius: 8px; max-width: 450px; justify-content: center;">
+        <p style="border-top-left-radius: 8px; border-top-right-radius: 8px; background-color: #2962ff; color: white; padding: 4px 6px 6px 6px;">Have Cravings ? Order Now</p>
+        <div class="conL2R" style="padding: 4px 6px 4px 6px; align-items: center;">
+            <p style="font-size: 18px;">Item Name : </p>
+            <input type="text" id="itemName" required>
+        </div>
+        <button onclick="addItem()" style="border-radius: 8px; background-color: black; color: white; max-width: fit-content; align-self: flex-end; margin-bottom: 10px; margin-right: 30px;">Order</button>
+    </div>
+
+    <button onclick="logout()" id="logout" style="max-width: fit-content; border-radius: 8px; padding: 6px; margin-top: 10px; color: white; background-color: #f44336;">Logout</button>
+
+
+    <script>
+        const s_url = "http://localhost:5500" ;
+        const items = document.getElementById('items');
+        document.getElementById('status').style.display = "none";
+        const nullText = document.getElementById('nullOrder');
+
+        const orders = JSON.parse('{{ orders | tojson | safe }}');
+        
+        if(orders.length!=0)
+        {
+            for(const order of orders)
+            {
+                const item = document.createElement("p");
+                item.innerText = order ;
+                items.appendChild(item);
+            }
+        }
+        else
+        {
+            nullText.style.display = "flex" ;
+            items.style.display = "none" ;
+        }
+            
+
+        async function addItem()
+        {
+            const itemName = document.getElementById('itemName').value ;
+
+            const resp = await fetch(s_url + '/api/addItem', {
+                method: "POST",
+                headers: {
+                    "Content-Type": "text/plain"
+                },
+                body: itemName
+            });
+
+            if(resp.redirected){
+                window.location.href = resp.url;
+            }
+        }
+
+        async function logout()
+        {
+            const resp = await fetch(s_url + "/api/logout");
+            if(resp.redirected){
+                window.location.href = resp.url;
+            }
+        }
+    </script>
+
+</body>
+</html>
