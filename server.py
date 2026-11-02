@@ -106,14 +106,14 @@ def get_profile():
 
     if not token:
         conn.close()
-        return render_template('authPage.html')
+        return redirect('/authPage')
 
     cur.execute("SELECT * FROM sessions WHERE token = ?", [token])
     ssn = cur.fetchone()
 
     if not ssn:
         conn.close()
-        return render_template('authPage.html')
+        return redirect('/authPage')
 
     cur.execute("SELECT * FROM users WHERE id = ?", [ssn["id"]])
     user = cur.fetchone()
@@ -123,7 +123,7 @@ def get_profile():
 
     conn.close()
 
-    return render_template('homePage.html', name=user['name'], orders=orders)
+    return render_template('homePage.html', name=user['name'], orders=orders, role=user['role'])
 
 @app.route('/api/addItem', methods=['POST'])
 def addItem():
@@ -154,4 +154,6 @@ def logout():
     return response
 
 app.run(port=5500, debug=True)
+
+
 
