@@ -35,13 +35,13 @@
     </div>
 
     <div class="conT2B" id="orders" style="max-width: 350px; display: flex; border: 1px solid #000000; background-color: #EEEEEE; border-radius: 8px; margin-top: 10px; padding:4px 6px 4px 6px;">
-        <p> Your Orders</p>
+        <p id="ordType"> Your Orders</p>
         <hr style="height: 1px; background-color: black;">
         <div class="conL2R" style="margin-left: 20px; justify-content: flex-start;">
             <p id="nullOrder" style="display: none; font-size: 18px;">You have not ordered anything yet.</p>
             
-            <div class="conT2B" id="items">
-                <p>Items</p>
+            <div class="conT2B" id="items";">
+                <p style="display: none;">Items</p>
             </div>
             <div class="conT2B" id="status">
                 <p>Status</p>
@@ -62,9 +62,11 @@
 
 
     <script>
+
         const s_url = "http://localhost:5500" ;
         const items = document.getElementById('items');
         document.getElementById('status').style.display = "none";
+
         const nullText = document.getElementById('nullOrder');
 
         const orders = JSON.parse('{{ orders | tojson | safe }}');
